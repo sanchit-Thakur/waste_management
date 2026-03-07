@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Upload } from 'lucide-react';
+import { useThemeStore } from '@/stores/themeStore';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { BaseCrudService } from '@/integrations';
@@ -31,6 +32,7 @@ const WASTE_TYPES = [
 
 export default function ReportPage() {
   const navigate = useNavigate();
+  const { isDarkMode } = useThemeStore();
   const [isSubmitting, setIsSubmitting] = useState(false);
   
   const [formData, setFormData] = useState({
@@ -83,32 +85,32 @@ export default function ReportPage() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className={`min-h-screen transition-colors ${isDarkMode ? 'bg-slate-950' : 'bg-background'}`}>
       <Header />
       
-      <section className="w-full py-20">
+      <section className={`w-full py-20 transition-colors ${isDarkMode ? 'bg-slate-900' : 'bg-white'}`}>
         <div className="max-w-[1200px] mx-auto px-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
-            <h1 className="font-heading text-5xl text-foreground mb-4">
+            <h1 className={`font-heading text-5xl mb-4 ${isDarkMode ? 'text-white' : 'text-foreground'}`}>
               Report & Schedule Pickup
             </h1>
-            <p className="font-paragraph text-lg text-foreground mb-12">
+            <p className={`font-paragraph text-lg mb-12 ${isDarkMode ? 'text-gray-400' : 'text-foreground'}`}>
               Fill out the form below to report your e-waste and schedule a pickup.
             </p>
 
             <form onSubmit={handleSubmit} className="space-y-12">
               {/* User Information */}
               <div className="space-y-6">
-                <h2 className="font-heading text-2xl text-foreground">
+                <h2 className={`font-heading text-2xl ${isDarkMode ? 'text-white' : 'text-foreground'}`}>
                   User Information
                 </h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
-                    <Label htmlFor="userName" className="font-paragraph text-base text-foreground">
+                    <Label htmlFor="userName" className={`font-paragraph text-base ${isDarkMode ? 'text-gray-300' : 'text-foreground'}`}>
                       Name *
                     </Label>
                     <Input
@@ -116,11 +118,11 @@ export default function ReportPage() {
                       required
                       value={formData.userName}
                       onChange={(e) => handleInputChange('userName', e.target.value)}
-                      className="font-paragraph"
+                      className={`font-paragraph ${isDarkMode ? 'bg-slate-800 border-slate-700 text-white' : ''}`}
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="userPhoneNumber" className="font-paragraph text-base text-foreground">
+                    <Label htmlFor="userPhoneNumber" className={`font-paragraph text-base ${isDarkMode ? 'text-gray-300' : 'text-foreground'}`}>
                       Phone Number *
                     </Label>
                     <Input
@@ -129,11 +131,11 @@ export default function ReportPage() {
                       required
                       value={formData.userPhoneNumber}
                       onChange={(e) => handleInputChange('userPhoneNumber', e.target.value)}
-                      className="font-paragraph"
+                      className={`font-paragraph ${isDarkMode ? 'bg-slate-800 border-slate-700 text-white' : ''}`}
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="userEmail" className="font-paragraph text-base text-foreground">
+                    <Label htmlFor="userEmail" className={`font-paragraph text-base ${isDarkMode ? 'text-gray-300' : 'text-foreground'}`}>
                       Email (Optional)
                     </Label>
                     <Input
@@ -141,7 +143,7 @@ export default function ReportPage() {
                       type="email"
                       value={formData.userEmail}
                       onChange={(e) => handleInputChange('userEmail', e.target.value)}
-                      className="font-paragraph"
+                      className={`font-paragraph ${isDarkMode ? 'bg-slate-800 border-slate-700 text-white' : ''}`}
                     />
                   </div>
                 </div>
@@ -149,21 +151,21 @@ export default function ReportPage() {
 
               {/* Location Information */}
               <div className="space-y-6">
-                <h2 className="font-heading text-2xl text-foreground">
+                <h2 className={`font-heading text-2xl ${isDarkMode ? 'text-white' : 'text-foreground'}`}>
                   Location Information
                 </h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
-                    <Label htmlFor="state" className="font-paragraph text-base text-foreground">
+                    <Label htmlFor="state" className={`font-paragraph text-base ${isDarkMode ? 'text-gray-300' : 'text-foreground'}`}>
                       State *
                     </Label>
                     <Select required value={formData.state} onValueChange={(value) => handleInputChange('state', value)}>
-                      <SelectTrigger className="font-paragraph">
+                      <SelectTrigger className={`font-paragraph ${isDarkMode ? 'bg-slate-800 border-slate-700 text-white' : ''}`}>
                         <SelectValue placeholder="Select state" />
                       </SelectTrigger>
-                      <SelectContent>
+                      <SelectContent className={isDarkMode ? 'bg-slate-800 border-slate-700' : ''}>
                         {INDIAN_STATES.map(state => (
-                          <SelectItem key={state} value={state} className="font-paragraph">
+                          <SelectItem key={state} value={state} className={`font-paragraph ${isDarkMode ? 'text-white' : ''}`}>
                             {state}
                           </SelectItem>
                         ))}
@@ -171,7 +173,7 @@ export default function ReportPage() {
                     </Select>
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="district" className="font-paragraph text-base text-foreground">
+                    <Label htmlFor="district" className={`font-paragraph text-base ${isDarkMode ? 'text-gray-300' : 'text-foreground'}`}>
                       District *
                     </Label>
                     <Input
@@ -179,11 +181,11 @@ export default function ReportPage() {
                       required
                       value={formData.district}
                       onChange={(e) => handleInputChange('district', e.target.value)}
-                      className="font-paragraph"
+                      className={`font-paragraph ${isDarkMode ? 'bg-slate-800 border-slate-700 text-white' : ''}`}
                     />
                   </div>
                   <div className="space-y-2 md:col-span-2">
-                    <Label htmlFor="fullAddress" className="font-paragraph text-base text-foreground">
+                    <Label htmlFor="fullAddress" className={`font-paragraph text-base ${isDarkMode ? 'text-gray-300' : 'text-foreground'}`}>
                       Full Address *
                     </Label>
                     <Textarea
@@ -191,12 +193,12 @@ export default function ReportPage() {
                       required
                       value={formData.fullAddress}
                       onChange={(e) => handleInputChange('fullAddress', e.target.value)}
-                      className="font-paragraph"
+                      className={`font-paragraph ${isDarkMode ? 'bg-slate-800 border-slate-700 text-white' : ''}`}
                       rows={3}
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="pincode" className="font-paragraph text-base text-foreground">
+                    <Label htmlFor="pincode" className={`font-paragraph text-base ${isDarkMode ? 'text-gray-300' : 'text-foreground'}`}>
                       Pincode *
                     </Label>
                     <Input
@@ -205,7 +207,7 @@ export default function ReportPage() {
                       pattern="[0-9]{6}"
                       value={formData.pincode}
                       onChange={(e) => handleInputChange('pincode', e.target.value)}
-                      className="font-paragraph"
+                      className={`font-paragraph ${isDarkMode ? 'bg-slate-800 border-slate-700 text-white' : ''}`}
                       placeholder="6-digit pincode"
                     />
                   </div>
@@ -214,21 +216,21 @@ export default function ReportPage() {
 
               {/* Waste Details */}
               <div className="space-y-6">
-                <h2 className="font-heading text-2xl text-foreground">
+                <h2 className={`font-heading text-2xl ${isDarkMode ? 'text-white' : 'text-foreground'}`}>
                   Waste Details
                 </h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
-                    <Label htmlFor="wasteType" className="font-paragraph text-base text-foreground">
+                    <Label htmlFor="wasteType" className={`font-paragraph text-base ${isDarkMode ? 'text-gray-300' : 'text-foreground'}`}>
                       Waste Type *
                     </Label>
                     <Select required value={formData.wasteType} onValueChange={(value) => handleInputChange('wasteType', value)}>
-                      <SelectTrigger className="font-paragraph">
+                      <SelectTrigger className={`font-paragraph ${isDarkMode ? 'bg-slate-800 border-slate-700 text-white' : ''}`}>
                         <SelectValue placeholder="Select waste type" />
                       </SelectTrigger>
-                      <SelectContent>
+                      <SelectContent className={isDarkMode ? 'bg-slate-800 border-slate-700' : ''}>
                         {WASTE_TYPES.map(type => (
-                          <SelectItem key={type} value={type} className="font-paragraph">
+                          <SelectItem key={type} value={type} className={`font-paragraph ${isDarkMode ? 'text-white' : ''}`}>
                             {type}
                           </SelectItem>
                         ))}
@@ -236,7 +238,7 @@ export default function ReportPage() {
                     </Select>
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="estimatedQuantity" className="font-paragraph text-base text-foreground">
+                    <Label htmlFor="estimatedQuantity" className={`font-paragraph text-base ${isDarkMode ? 'text-gray-300' : 'text-foreground'}`}>
                       Estimated Quantity *
                     </Label>
                     <Input
@@ -244,12 +246,12 @@ export default function ReportPage() {
                       required
                       value={formData.estimatedQuantity}
                       onChange={(e) => handleInputChange('estimatedQuantity', e.target.value)}
-                      className="font-paragraph"
+                      className={`font-paragraph ${isDarkMode ? 'bg-slate-800 border-slate-700 text-white' : ''}`}
                       placeholder="e.g., 5 items, 2 kg"
                     />
                   </div>
                   <div className="space-y-2 md:col-span-2">
-                    <Label htmlFor="wasteDescription" className="font-paragraph text-base text-foreground">
+                    <Label htmlFor="wasteDescription" className={`font-paragraph text-base ${isDarkMode ? 'text-gray-300' : 'text-foreground'}`}>
                       Description *
                     </Label>
                     <Textarea
@@ -257,7 +259,7 @@ export default function ReportPage() {
                       required
                       value={formData.wasteDescription}
                       onChange={(e) => handleInputChange('wasteDescription', e.target.value)}
-                      className="font-paragraph"
+                      className={`font-paragraph ${isDarkMode ? 'bg-slate-800 border-slate-700 text-white' : ''}`}
                       rows={3}
                       placeholder="Describe the condition and details of the e-waste"
                     />
@@ -267,19 +269,19 @@ export default function ReportPage() {
 
               {/* Media Upload */}
               <div className="space-y-6">
-                <h2 className="font-heading text-2xl text-foreground">
+                <h2 className={`font-heading text-2xl ${isDarkMode ? 'text-white' : 'text-foreground'}`}>
                   Media Upload
                 </h2>
                 <div className="space-y-2">
-                  <Label htmlFor="wasteImages" className="font-paragraph text-base text-foreground">
+                  <Label htmlFor="wasteImages" className={`font-paragraph text-base ${isDarkMode ? 'text-gray-300' : 'text-foreground'}`}>
                     Upload Photos (Optional)
                   </Label>
-                  <div className="border-2 border-dashed border-accent-light-grey rounded-lg p-8 text-center">
+                  <div className={`border-2 border-dashed rounded-lg p-8 text-center ${isDarkMode ? 'border-slate-700 bg-slate-800/50' : 'border-accent-light-grey'}`}>
                     <Upload className="w-12 h-12 text-primary mx-auto mb-4" />
-                    <p className="font-paragraph text-base text-foreground mb-2">
+                    <p className={`font-paragraph text-base mb-2 ${isDarkMode ? 'text-gray-300' : 'text-foreground'}`}>
                       Upload photos of your e-waste
                     </p>
-                    <p className="font-paragraph text-sm text-foreground opacity-70">
+                    <p className={`font-paragraph text-sm ${isDarkMode ? 'text-gray-500' : 'text-foreground opacity-70'}`}>
                       This helps authorities assess the waste better
                     </p>
                   </div>
@@ -288,12 +290,12 @@ export default function ReportPage() {
 
               {/* Pickup Scheduling */}
               <div className="space-y-6">
-                <h2 className="font-heading text-2xl text-foreground">
+                <h2 className={`font-heading text-2xl ${isDarkMode ? 'text-white' : 'text-foreground'}`}>
                   Pickup Scheduling
                 </h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
-                    <Label htmlFor="pickupDate" className="font-paragraph text-base text-foreground">
+                    <Label htmlFor="pickupDate" className={`font-paragraph text-base ${isDarkMode ? 'text-gray-300' : 'text-foreground'}`}>
                       Pickup Date *
                     </Label>
                     <Input
@@ -302,12 +304,12 @@ export default function ReportPage() {
                       required
                       value={formData.pickupDate}
                       onChange={(e) => handleInputChange('pickupDate', e.target.value)}
-                      className="font-paragraph"
+                      className={`font-paragraph ${isDarkMode ? 'bg-slate-800 border-slate-700 text-white' : ''}`}
                       min={new Date().toISOString().split('T')[0]}
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="pickupTime" className="font-paragraph text-base text-foreground">
+                    <Label htmlFor="pickupTime" className={`font-paragraph text-base ${isDarkMode ? 'text-gray-300' : 'text-foreground'}`}>
                       Pickup Time *
                     </Label>
                     <Input
@@ -316,7 +318,7 @@ export default function ReportPage() {
                       required
                       value={formData.pickupTime}
                       onChange={(e) => handleInputChange('pickupTime', e.target.value)}
-                      className="font-paragraph"
+                      className={`font-paragraph ${isDarkMode ? 'bg-slate-800 border-slate-700 text-white' : ''}`}
                     />
                   </div>
                 </div>

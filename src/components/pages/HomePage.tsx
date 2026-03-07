@@ -17,6 +17,7 @@ import {
   Globe,
   ChevronDown
 } from 'lucide-react';
+import { useThemeStore } from '@/stores/themeStore';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { Button } from '@/components/ui/button';
@@ -95,7 +96,7 @@ const ParallaxImage = ({ className }: { className?: string }) => {
   );
 };
 
-const StatCard = ({ stat, index }: { stat: typeof IMPACT_STATS[0], index: number }) => {
+const StatCard = ({ stat, index, isDarkMode }: { stat: typeof IMPACT_STATS[0], index: number, isDarkMode: boolean }) => {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-50px" });
   
@@ -105,39 +106,39 @@ const StatCard = ({ stat, index }: { stat: typeof IMPACT_STATS[0], index: number
       initial={{ opacity: 0, y: 20 }}
       animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
       transition={{ duration: 0.6, delay: index * 0.1 }}
-      className="flex flex-col items-start p-6 border-l border-accent-light-grey/50 hover:bg-accent-light-grey/10 transition-colors duration-300"
+      className={`flex flex-col items-start p-6 border-l transition-colors ${isDarkMode ? 'border-slate-700 hover:bg-slate-700/30' : 'border-accent-light-grey/50 hover:bg-accent-light-grey/10'}`}
     >
-      <div className="mb-4 p-3 bg-primary/10 rounded-full text-primary">
+      <div className={`mb-4 p-3 rounded-full text-primary ${isDarkMode ? 'bg-primary/20' : 'bg-primary/10'}`}>
         {stat.icon}
       </div>
       <h3 className="text-4xl font-heading font-bold text-primary mb-1">
         {stat.value}
       </h3>
-      <p className="text-sm font-heading text-foreground/60 uppercase tracking-wider mb-2">{stat.unit}</p>
-      <p className="text-lg font-paragraph text-foreground">{stat.label}</p>
+      <p className={`text-sm font-heading uppercase tracking-wider mb-2 ${isDarkMode ? 'text-gray-500' : 'text-foreground/60'}`}>{stat.unit}</p>
+      <p className={`text-lg font-paragraph ${isDarkMode ? 'text-gray-300' : 'text-foreground'}`}>{stat.label}</p>
     </motion.div>
   );
 };
 
-const StepCard = ({ step, index }: { step: typeof STEPS[0], index: number }) => {
+const StepCard = ({ step, index, isDarkMode }: { step: typeof STEPS[0], index: number, isDarkMode: boolean }) => {
   return (
     <motion.div
       initial={{ opacity: 0, x: 50 }}
       whileInView={{ opacity: 1, x: 0 }}
       viewport={{ once: true, margin: "-100px" }}
       transition={{ duration: 0.6, delay: index * 0.2 }}
-      className="group relative bg-white border border-accent-light-grey p-8 md:p-12 rounded-2xl hover:shadow-lg transition-all duration-500"
+      className={`group relative p-8 md:p-12 rounded-2xl hover:shadow-lg transition-all duration-500 ${isDarkMode ? 'bg-slate-800 border border-slate-700 hover:border-primary' : 'bg-white border border-accent-light-grey hover:border-primary'}`}
     >
-      <div className="absolute top-8 right-8 text-6xl font-heading font-bold text-accent-light-grey/30 group-hover:text-primary/10 transition-colors">
+      <div className={`absolute top-8 right-8 text-6xl font-heading font-bold group-hover:text-primary/10 transition-colors ${isDarkMode ? 'text-slate-700/30' : 'text-accent-light-grey/30'}`}>
         0{step.id}
       </div>
       <div className="w-16 h-16 bg-primary rounded-2xl flex items-center justify-center mb-8 shadow-md group-hover:scale-110 transition-transform duration-300">
         {step.icon}
       </div>
-      <h3 className="text-2xl font-heading font-semibold text-foreground mb-4">
+      <h3 className={`text-2xl font-heading font-semibold mb-4 ${isDarkMode ? 'text-white' : 'text-foreground'}`}>
         {step.title}
       </h3>
-      <p className="text-lg font-paragraph text-foreground/70 leading-relaxed">
+      <p className={`text-lg font-paragraph leading-relaxed ${isDarkMode ? 'text-gray-400' : 'text-foreground/70'}`}>
         {step.description}
       </p>
     </motion.div>
@@ -146,6 +147,7 @@ const StepCard = ({ step, index }: { step: typeof STEPS[0], index: number }) => 
 
 export default function HomePage() {
   const containerRef = useRef<HTMLDivElement>(null);
+  const { isDarkMode } = useThemeStore();
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start start", "end end"]
@@ -157,7 +159,7 @@ export default function HomePage() {
   });
 
   return (
-    <div ref={containerRef} className="min-h-screen bg-background text-foreground selection:bg-primary/20">
+    <div ref={containerRef} className={`min-h-screen transition-colors ${isDarkMode ? 'bg-slate-950 text-white' : 'bg-background text-foreground'} selection:bg-primary/20`}>
       <motion.div
         className="fixed top-0 left-0 right-0 h-1 bg-primary z-50 origin-left"
         style={{ scaleX }}
@@ -168,11 +170,11 @@ export default function HomePage() {
       <main className="w-full overflow-clip">
         
         {/* --- HERO SECTION --- */}
-        <section className="relative w-full min-h-[95vh] flex items-center justify-center overflow-hidden">
+        <section className={`relative w-full min-h-[95vh] flex items-center justify-center overflow-hidden transition-colors ${isDarkMode ? 'bg-slate-900' : 'bg-white'}`}>
           {/* Background Parallax */}
           <div className="absolute inset-0 z-0">
              <ParallaxImage className="w-full h-full" />
-             <div className="absolute inset-0 bg-gradient-to-b from-white/80 via-white/40 to-white/90" />
+             <div className={`absolute inset-0 ${isDarkMode ? 'bg-gradient-to-b from-slate-900/80 via-slate-900/40 to-slate-900/90' : 'bg-gradient-to-b from-white/80 via-white/40 to-white/90'}`} />
           </div>
 
           <div className="relative z-10 w-full max-w-[120rem] mx-auto px-6 md:px-12 pt-20">
@@ -183,10 +185,10 @@ export default function HomePage() {
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.8, ease: "easeOut" }}
                 >
-                  <Badge variant="outline" className="mb-6 px-4 py-2 text-primary border-primary/30 bg-primary/5 text-sm tracking-widest uppercase">
+                  <Badge variant="outline" className={`mb-6 px-4 py-2 text-primary border-primary/30 bg-primary/5 text-sm tracking-widest uppercase ${isDarkMode ? 'border-primary/50 bg-primary/10' : ''}`}>
                     National E-Waste Initiative
                   </Badge>
-                  <h1 className="font-heading text-6xl md:text-7xl lg:text-8xl font-bold leading-[1.1] tracking-tight text-foreground">
+                  <h1 className={`font-heading text-6xl md:text-7xl lg:text-8xl font-bold leading-[1.1] tracking-tight ${isDarkMode ? 'text-white' : 'text-foreground'}`}>
                     Responsible <br />
                     <span className="text-primary">Disposal</span> Made <br />
                     Simple.
@@ -197,7 +199,7 @@ export default function HomePage() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.8, delay: 0.2 }}
-                  className="font-paragraph text-xl md:text-2xl text-foreground/70 max-w-2xl leading-relaxed"
+                  className={`font-paragraph text-xl md:text-2xl max-w-2xl leading-relaxed ${isDarkMode ? 'text-gray-300' : 'text-foreground/70'}`}
                 >
                   Join the movement towards a cleaner India. Report electronic waste and schedule a safe, government-authorized pickup in your district today.
                 </motion.p>
@@ -222,7 +224,7 @@ export default function HomePage() {
                     asChild 
                     variant="outline" 
                     size="lg" 
-                    className="h-16 px-10 text-lg border-2 border-accent-light-grey hover:bg-accent-light-grey/20 text-foreground rounded-full"
+                    className={`h-16 px-10 text-lg border-2 rounded-full ${isDarkMode ? 'border-slate-600 bg-slate-800 text-white hover:bg-slate-700' : 'border-accent-light-grey bg-white hover:bg-accent-light-grey/20 text-foreground'}`}
                   >
                     <Link to="#how-it-works">
                       How It Works
@@ -237,7 +239,7 @@ export default function HomePage() {
                     initial={{ opacity: 0, scale: 0.9 }}
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ duration: 1, delay: 0.3 }}
-                    className="absolute inset-0 bg-accent-light-grey/20 rounded-[3rem] overflow-hidden"
+                    className={`absolute inset-0 rounded-[3rem] overflow-hidden ${isDarkMode ? 'bg-slate-800/50' : 'bg-accent-light-grey/20'}`}
                  >
                     <Image 
                       src="https://static.wixstatic.com/media/b21105_b9a6030a0c6b40c0b516086b864a4c38~mv2.png?originWidth=960&originHeight=576"
@@ -251,15 +253,15 @@ export default function HomePage() {
                     initial={{ opacity: 0, y: 40 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.8, delay: 0.6 }}
-                    className="absolute -bottom-12 -left-12 bg-white p-6 rounded-2xl shadow-xl border border-accent-light-grey max-w-xs"
+                    className={`absolute -bottom-12 -left-12 p-6 rounded-2xl shadow-xl border max-w-xs ${isDarkMode ? 'bg-slate-800 border-slate-700' : 'bg-white border-accent-light-grey'}`}
                  >
                     <div className="flex items-center gap-4 mb-2">
-                      <div className="p-2 bg-green-100 rounded-full text-green-700">
+                      <div className={`p-2 rounded-full ${isDarkMode ? 'bg-green-900/50 text-green-400' : 'bg-green-100 text-green-700'}`}>
                         <CheckCircle2 className="w-6 h-6" />
                       </div>
-                      <span className="font-heading font-bold text-lg">Verified Recyclers</span>
+                      <span className={`font-heading font-bold text-lg ${isDarkMode ? 'text-white' : 'text-foreground'}`}>Verified Recyclers</span>
                     </div>
-                    <p className="text-sm text-foreground/60">All pickups are handled by government authorized partners.</p>
+                    <p className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-foreground/60'}`}>All pickups are handled by government authorized partners.</p>
                  </motion.div>
               </div>
             </div>
@@ -269,36 +271,36 @@ export default function HomePage() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 1.5, duration: 1 }}
-            className="absolute bottom-10 left-1/2 -translate-x-1/2 animate-bounce text-foreground/40"
+            className={`absolute bottom-10 left-1/2 -translate-x-1/2 animate-bounce ${isDarkMode ? 'text-gray-600' : 'text-foreground/40'}`}
           >
             <ChevronDown className="w-8 h-8" />
           </motion.div>
         </section>
 
         {/* --- IMPACT STATISTICS SECTION --- */}
-        <section className="w-full py-24 bg-white border-y border-accent-light-grey">
+        <section className={`w-full py-24 border-y transition-colors ${isDarkMode ? 'bg-slate-800 border-slate-700' : 'bg-white border-accent-light-grey'}`}>
           <div className="max-w-[120rem] mx-auto px-6 md:px-12">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-0">
               {IMPACT_STATS.map((stat, index) => (
-                <StatCard key={stat.id} stat={stat} index={index} />
+                <StatCard key={stat.id} stat={stat} index={index} isDarkMode={isDarkMode} />
               ))}
             </div>
           </div>
         </section>
 
         {/* --- HOW IT WORKS (Sticky Layout) --- */}
-        <section id="how-it-works" className="w-full py-32 bg-secondary/30 relative">
+        <section id="how-it-works" className={`w-full py-32 relative transition-colors ${isDarkMode ? 'bg-slate-900' : 'bg-secondary/30'}`}>
           <div className="max-w-[120rem] mx-auto px-6 md:px-12">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-16">
               
               {/* Sticky Header */}
               <div className="lg:col-span-4 relative">
                 <div className="sticky top-32">
-                  <h2 className="font-heading text-5xl font-bold text-foreground mb-6">
+                  <h2 className={`font-heading text-5xl font-bold mb-6 ${isDarkMode ? 'text-white' : 'text-foreground'}`}>
                     Simple Steps to <br />
                     <span className="text-primary">Sustainability</span>
                   </h2>
-                  <p className="font-paragraph text-xl text-foreground/70 mb-8 max-w-md">
+                  <p className={`font-paragraph text-xl mb-8 max-w-md ${isDarkMode ? 'text-gray-400' : 'text-foreground/70'}`}>
                     We've streamlined the process to make responsible disposal as easy as ordering a cab.
                   </p>
                   <Separator className="w-24 bg-primary h-1 mb-8" />
@@ -313,7 +315,7 @@ export default function HomePage() {
               {/* Scrollable Steps */}
               <div className="lg:col-span-8 flex flex-col gap-8">
                 {STEPS.map((step, index) => (
-                  <StepCard key={step.id} step={step} index={index} />
+                  <StepCard key={step.id} step={step} index={index} isDarkMode={isDarkMode} />
                 ))}
               </div>
               
@@ -327,16 +329,16 @@ export default function HomePage() {
         </section>
 
         {/* --- WASTE TYPES MARQUEE/GRID --- */}
-        <section className="w-full py-32 bg-foreground text-background overflow-hidden">
+        <section className={`w-full py-32 overflow-hidden transition-colors ${isDarkMode ? 'bg-slate-800 text-white' : 'bg-foreground text-background'}`}>
           <div className="max-w-[120rem] mx-auto px-6 md:px-12 mb-16">
             <div className="flex flex-col md:flex-row justify-between items-end gap-8">
               <div>
                 <h2 className="font-heading text-4xl md:text-5xl font-bold mb-4">What We Collect</h2>
-                <p className="font-paragraph text-lg text-white/60 max-w-xl">
+                <p className={`font-paragraph text-lg max-w-xl ${isDarkMode ? 'text-gray-300' : 'text-white/60'}`}>
                   We accept a wide range of electronic waste for safe dismantling and recycling.
                 </p>
               </div>
-              <Link to="/report" className="text-primary hover:text-white transition-colors flex items-center gap-2 text-lg font-medium">
+              <Link to="/report" className={`hover:text-white transition-colors flex items-center gap-2 text-lg font-medium ${isDarkMode ? 'text-primary hover:text-primary/80' : 'text-primary'}`}>
                 View Full List <ArrowRight className="w-5 h-5" />
               </Link>
             </div>
@@ -352,13 +354,13 @@ export default function HomePage() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: i * 0.1 }}
-                  className="w-[300px] md:w-[350px] bg-white/5 border border-white/10 p-8 rounded-2xl hover:bg-white/10 transition-colors duration-300 group"
+                  className={`w-[300px] md:w-[350px] p-8 rounded-2xl hover:transition-colors duration-300 group ${isDarkMode ? 'bg-white/5 border border-white/10 hover:bg-white/10' : 'bg-white/5 border border-white/10 hover:bg-white/10'}`}
                 >
-                  <div className="mb-6 p-4 bg-white/10 rounded-xl w-fit text-primary group-hover:text-white transition-colors">
+                  <div className={`mb-6 p-4 rounded-xl w-fit transition-colors ${isDarkMode ? 'bg-white/10 text-primary group-hover:text-white' : 'bg-white/10 text-primary group-hover:text-white'}`}>
                     {type.icon}
                   </div>
                   <h3 className="text-2xl font-heading font-semibold mb-3">{type.name}</h3>
-                  <p className="text-white/60 font-paragraph leading-relaxed">
+                  <p className={`font-paragraph leading-relaxed ${isDarkMode ? 'text-white/60' : 'text-white/60'}`}>
                     {type.desc}
                   </p>
                 </motion.div>
@@ -378,33 +380,33 @@ export default function HomePage() {
                />
                <div className="absolute inset-0 bg-primary/20 mix-blend-multiply" />
             </div>
-            <div className="flex flex-col justify-center p-12 lg:p-24 bg-secondary/20">
-              <h2 className="font-heading text-4xl md:text-5xl font-bold text-foreground mb-8">
+            <div className={`flex flex-col justify-center p-12 lg:p-24 transition-colors ${isDarkMode ? 'bg-slate-800' : 'bg-secondary/20'}`}>
+              <h2 className={`font-heading text-4xl md:text-5xl font-bold mb-8 ${isDarkMode ? 'text-white' : 'text-foreground'}`}>
                 Why It Matters
               </h2>
               <div className="space-y-8">
                 <div className="flex gap-6">
                   <div className="mt-1">
-                    <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+                    <div className={`w-12 h-12 rounded-full flex items-center justify-center text-primary ${isDarkMode ? 'bg-primary/20' : 'bg-primary/10'}`}>
                       <Leaf className="w-6 h-6" />
                     </div>
                   </div>
                   <div>
-                    <h3 className="text-xl font-bold mb-2">Prevent Toxic Leaks</h3>
-                    <p className="text-foreground/70 leading-relaxed">
+                    <h3 className={`text-xl font-bold mb-2 ${isDarkMode ? 'text-white' : 'text-foreground'}`}>Prevent Toxic Leaks</h3>
+                    <p className={`leading-relaxed ${isDarkMode ? 'text-gray-400' : 'text-foreground/70'}`}>
                       Electronics contain lead, mercury, and cadmium. Proper recycling prevents these from poisoning our soil and water.
                     </p>
                   </div>
                 </div>
                 <div className="flex gap-6">
                   <div className="mt-1">
-                    <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+                    <div className={`w-12 h-12 rounded-full flex items-center justify-center text-primary ${isDarkMode ? 'bg-primary/20' : 'bg-primary/10'}`}>
                       <Recycle className="w-6 h-6" />
                     </div>
                   </div>
                   <div>
-                    <h3 className="text-xl font-bold mb-2">Recover Precious Metals</h3>
-                    <p className="text-foreground/70 leading-relaxed">
+                    <h3 className={`text-xl font-bold mb-2 ${isDarkMode ? 'text-white' : 'text-foreground'}`}>Recover Precious Metals</h3>
+                    <p className={`leading-relaxed ${isDarkMode ? 'text-gray-400' : 'text-foreground/70'}`}>
                       We recover gold, silver, copper, and rare earth elements, reducing the need for destructive mining.
                     </p>
                   </div>
@@ -415,32 +417,32 @@ export default function HomePage() {
         </section>
 
         {/* --- RECYCLING CENTERS LIST --- */}
-        <section className="w-full py-32 bg-background">
+        <section className={`w-full py-32 transition-colors ${isDarkMode ? 'bg-slate-900' : 'bg-background'}`}>
           <div className="max-w-[100rem] mx-auto px-6 md:px-12">
             <div className="text-center mb-20">
-              <h2 className="font-heading text-4xl font-bold mb-4">Available Recycling Centers</h2>
-              <p className="text-foreground/60 max-w-2xl mx-auto">
+              <h2 className={`font-heading text-4xl font-bold mb-4 ${isDarkMode ? 'text-white' : 'text-foreground'}`}>Available Recycling Centers</h2>
+              <p className={`max-w-2xl mx-auto ${isDarkMode ? 'text-gray-400' : 'text-foreground/60'}`}>
                 While we offer doorstep pickup, you can also visit our authorized centers across India.
               </p>
             </div>
 
-            <div className="grid grid-cols-1 gap-0 border-t border-accent-light-grey">
+            <div className={`grid grid-cols-1 gap-0 border-t ${isDarkMode ? 'border-slate-700' : 'border-accent-light-grey'}`}>
               {RECYCLING_CENTERS.map((center) => (
                 <div 
                   key={center.id}
-                  className="group flex flex-col md:flex-row justify-between items-start md:items-center p-8 border-b border-accent-light-grey hover:bg-secondary/30 transition-colors duration-300"
+                  className={`group flex flex-col md:flex-row justify-between items-start md:items-center p-8 border-b transition-colors duration-300 ${isDarkMode ? 'border-slate-700 hover:bg-slate-800' : 'border-accent-light-grey hover:bg-secondary/30'}`}
                 >
                   <div className="mb-4 md:mb-0">
-                    <h3 className="text-2xl font-heading font-semibold text-foreground group-hover:text-primary transition-colors">
+                    <h3 className={`text-2xl font-heading font-semibold group-hover:text-primary transition-colors ${isDarkMode ? 'text-white' : 'text-foreground'}`}>
                       {center.name}
                     </h3>
-                    <p className="text-foreground/60 mt-1 flex items-center gap-2">
+                    <p className={`mt-1 flex items-center gap-2 ${isDarkMode ? 'text-gray-400' : 'text-foreground/60'}`}>
                       <MapPin className="w-4 h-4" /> {center.district}, {center.state}
                     </p>
                   </div>
                   <div className="text-right md:text-right w-full md:w-auto">
-                    <p className="text-sm text-foreground/80 mb-2">{center.address}</p>
-                    <Badge variant="secondary" className="bg-accent-light-grey/30 text-foreground/70">
+                    <p className={`text-sm mb-2 ${isDarkMode ? 'text-gray-400' : 'text-foreground/80'}`}>{center.address}</p>
+                    <Badge variant="secondary" className={`${isDarkMode ? 'bg-slate-700 text-gray-300' : 'bg-accent-light-grey/30 text-foreground/70'}`}>
                       Authorized Partner
                     </Badge>
                   </div>
@@ -449,7 +451,7 @@ export default function HomePage() {
             </div>
             
             <div className="mt-12 text-center">
-              <Button variant="outline" className="rounded-full px-8 border-accent-light-grey">
+              <Button variant="outline" className={`rounded-full px-8 ${isDarkMode ? 'border-slate-600 text-white hover:bg-slate-800' : 'border-accent-light-grey'}`}>
                 View All Centers
               </Button>
             </div>
@@ -457,7 +459,7 @@ export default function HomePage() {
         </section>
 
         {/* --- FINAL CTA --- */}
-        <section className="w-full py-32 bg-primary text-primary-foreground relative overflow-hidden">
+        <section className={`w-full py-32 relative overflow-hidden transition-colors ${isDarkMode ? 'bg-primary/90' : 'bg-primary'} text-primary-foreground`}>
           <div className="absolute inset-0 opacity-10">
              <Image 
                src="https://static.wixstatic.com/media/b21105_2fdf5572cfbf4978a9908f7b82e87cde~mv2.png?originWidth=1280&originHeight=704"
