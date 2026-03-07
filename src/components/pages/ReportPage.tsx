@@ -51,8 +51,31 @@ export default function ReportPage() {
     pickupTime: ''
   });
 
+  const [uploadedFileName, setUploadedFileName] = useState('');
+  const [isUploading, setIsUploading] = useState(false);
+
   const handleInputChange = (field: string, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
+  };
+
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setIsUploading(true);
+    try {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const base64String = event.target?.result as string;
+        setFormData(prev => ({ ...prev, wasteImages: base64String }));
+        setUploadedFileName(file.name);
+      };
+      reader.readAsDataURL(file);
+    } catch (error) {
+      console.error('Error uploading file:', error);
+    } finally {
+      setIsUploading(false);
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -276,15 +299,30 @@ export default function ReportPage() {
                   <Label htmlFor="wasteImages" className={`font-paragraph text-base ${isDarkMode ? 'text-gray-300' : 'text-foreground'}`}>
                     Upload Photos (Optional)
                   </Label>
-                  <div className={`border-2 border-dashed rounded-lg p-8 text-center ${isDarkMode ? 'border-slate-700 bg-slate-800/50' : 'border-accent-light-grey'}`}>
+                  <input
+                    id="wasteImages"
+                    type="file"
+                    accept="image/*"
+                    onChange={handleFileUpload}
+                    disabled={isUploading}
+                    className="hidden"
+                  />
+                  <label
+                    htmlFor="wasteImages"
+                    className={`block border-2 border-dashed rounded-lg p-8 text-center cursor-pointer transition-colors ${
+                      isDarkMode
+                        ? 'border-slate-700 bg-slate-800/50 hover:bg-slate-800'
+                        : 'border-accent-light-grey hover:bg-gray-50'
+                    } ${isUploading ? 'opacity-50 cursor-not-allowed' : ''}`}
+                  >
                     <Upload className="w-12 h-12 text-primary mx-auto mb-4" />
                     <p className={`font-paragraph text-base mb-2 ${isDarkMode ? 'text-gray-300' : 'text-foreground'}`}>
-                      Upload photos of your e-waste
+                      {isUploading ? 'Uploading...' : uploadedFileName ? `✓ ${uploadedFileName}` : 'Upload photos of your e-waste'}
                     </p>
                     <p className={`font-paragraph text-sm ${isDarkMode ? 'text-gray-500' : 'text-foreground opacity-70'}`}>
                       This helps authorities assess the waste better
                     </p>
-                  </div>
+                  </label>
                 </div>
               </div>
 
